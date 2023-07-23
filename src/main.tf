@@ -61,7 +61,7 @@ resource "aws_route_table" "labs_rt" {
 }
 
 data "aws_key_pair" "deployer" {
-  key_name   = var.key_pair_name
+  key_name = var.key_pair_name
 }
 
 resource "aws_instance" "lab_ec2" {
@@ -82,26 +82,29 @@ resource "aws_security_group" "allow_all" {
   description = "Permitir o trafego de tudo"
   vpc_id      = aws_vpc.labs_vpc.id
 
-  ingress {
-    description      = "ALL"
-    from_port        = 0
-    to_port          = 0
-    protocol         = "-1"
-    cidr_blocks      = ["0.0.0.0/0"]
-    ipv6_cidr_blocks = ["::/0"]
-  }
-
-  egress {
-    from_port        = 0
-    to_port          = 0
-    protocol         = "-1"
-    cidr_blocks      = ["0.0.0.0/0"]
-    ipv6_cidr_blocks = ["::/0"]
-  }
-
   tags = {
     Name = "allow_all"
   }
+}
+
+resource "aws_security_group_rule" "allow_all_ingress" {
+  type              = "ingress"
+  from_port         = 0
+  to_port           = 0
+  protocol          = "-1"
+  cidr_blocks       = ["0.0.0.0/0"]
+  ipv6_cidr_blocks  = ["::/0"]
+  security_group_id = aws_security_group.allow_all.id
+}
+
+resource "aws_security_group_rule" "allow_all_egress" {
+  type              = "egress"
+  from_port         = 0
+  to_port           = 0
+  protocol          = "-1"
+  cidr_blocks       = ["0.0.0.0/0"]
+  ipv6_cidr_blocks  = ["::/0"]
+  security_group_id = aws_security_group.allow_all.id
 }
 
 output "public_ip" {
