@@ -70,7 +70,7 @@ resource "aws_instance" "lab_ec2" {
   key_name                    = data.aws_key_pair.deployer.key_name
   subnet_id                   = aws_subnet.labs_sub.id
   associate_public_ip_address = true
-  security_groups             = [aws_security_group.allow_all.id]
+  vpc_security_group_ids              = [aws_security_group.allow_all.id]
 
   tags = {
     Name = "lab-ec2"
